@@ -156,8 +156,8 @@ on_message_publish(Message, Env) ->
     % {payload, Payload},
     {timestamp, Timestamp}
   ],
-  Body = binary_to_list(Payload)
-  KafkaMsg = Msg ++ Body
+  Body = binary_to_list(Payload),
+  KafkaMsg = Msg ++ Body,
   Kafka = proplists:get_value(bridges, Env),
   OnMessagePublishTopic = proplists:get_value(on_message_publish_topic, Kafka),
   produce_kafka_message(list_to_binary(OnMessagePublishTopic), KafkaMsg, From, Env),
