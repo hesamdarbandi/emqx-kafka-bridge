@@ -147,7 +147,7 @@ on_message_publish(Message = #message{topic = <<"$SYS/", _/binary>>}, _Env) ->
 
 on_message_publish(Message, Env) ->
   #message{id = Id, qos = QoS, topic = Topic, from = From, flags = Flags, headers = Headers, payload = Payload, timestamp = Timestamp} = Message, 
-  PaylodObj = jsx:decode(binary_to_list(Payload)),
+  PaylodObj = binary_to_list(Payload),
   Kafka = proplists:get_value(bridges, Env),
   OnMessagePublishTopic = proplists:get_value(on_message_publish_topic, Kafka),
   produce_kafka_message(list_to_binary(OnMessagePublishTopic), PaylodObj, From, Env),
@@ -224,14 +224,14 @@ getPartition(Key) ->
 produce_kafka_message(Topic, Message, ClientId, Env) ->
   Key = iolist_to_binary(ClientId),
   Partition = getPartition(Key),
-  JsonStr = jsx:encode(Message),
+  % JsonStr = jsx:encode(Message),
   Kafka = proplists:get_value(bridges, Env),
   IsAsyncProducer = proplists:get_value(is_async_producer, Kafka),
   if
     IsAsyncProducer == false ->
-      brod:produce_sync(brod_client_1, Topic, Partition, ClientId, JsonStr);
+      brod:produce_sync(brod_client_1, Topic, Partition, ClientId, Message);
     true ->
-      brod:produce_no_ack(brod_client_1, Topic, Partition, ClientId, JsonStr)
+      brod:produce_no_ack(brod_client_1, Topic, Partition, ClientId, Message)
 %%      brod:produce(brod_client_1, Topic, Partition, ClientId, JsonStr)
   end,
   ok.
