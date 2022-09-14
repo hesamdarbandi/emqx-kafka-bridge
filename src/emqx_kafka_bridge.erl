@@ -149,7 +149,7 @@ on_message_publish(Message, Env) ->
   % #message{id = Id, qos = QoS, topic = Topic, from = From, flags = Flags, headers = Headers, payload = Payload, timestamp = Timestamp} = Message, 
   #message{id = Id, qos = QoS, topic = Topic, from = From, flags = Flags, headers = Headers, payload = Payload, timestamp = Timestamp} = Message, 
   io:fwrite("~p~n",[Payload]),
-  io:fwrite("~p~n",[Payload.is_binary()]),
+  io:fwrite("~p~n",[is_binary(Payload)]),
   Body = binary_to_list(Payload),
   Msg = [
     {name, lists:nth(name, Body)},
