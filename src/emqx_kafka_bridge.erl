@@ -146,9 +146,11 @@ on_message_publish(Message = #message{topic = <<"$SYS/", _/binary>>}, _Env) ->
   {ok, Message};
 
 on_message_publish(Message, Env) ->
+  % #message{id = Id, qos = QoS, topic = Topic, from = From, flags = Flags, headers = Headers, payload = Payload, timestamp = Timestamp} = Message, 
   #message{id = Id, qos = QoS, topic = Topic, from = From, flags = Flags, headers = Headers, payload = Payload, timestamp = Timestamp} = Message, 
+  io:fwrite("~p~n",[Payload]),
   Msg = [
-    {qos, QoS},
+    {name, Payload.name},
     {topic, Topic},
     {from, From},
 %%    {flags, Flags},
