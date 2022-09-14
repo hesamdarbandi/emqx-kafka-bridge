@@ -151,9 +151,9 @@ on_message_publish(Message, Env) ->
   io:fwrite("~p~n",[Payload]),
   io:fwrite("~p~n",[is_binary(Payload)]),
   Body = binary_to_list(Payload),
-  io:fwrite("~p~n",[Body]),
   Msg = [
-    {topic, Topic},
+    {name, lists:nth(name, Body)}
+    % {topic, Topic},
     % {from, From},
 %%    {flags, Flags},
 %%    {headers, Headers},
