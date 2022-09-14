@@ -149,20 +149,21 @@ on_message_publish(Message, Env) ->
   % #message{id = Id, qos = QoS, topic = Topic, from = From, flags = Flags, headers = Headers, payload = Payload, timestamp = Timestamp} = Message, 
   #message{id = Id, qos = QoS, topic = Topic, from = From, flags = Flags, headers = Headers, payload = Payload, timestamp = Timestamp} = Message, 
   io:fwrite("~p~n",[Payload]),
+  io:fwrite("~p~n",[Payload.is_binary()]),
+  Body = binary_to_list(Payload),
   Msg = [
-    {name, Payload.name},
-    {topic, Topic},
-    {from, From},
+    {name, lists:nth(name, Body)},
+    % {topic, Topic},
+    % {from, From},
 %%    {flags, Flags},
 %%    {headers, Headers},
     % {payload, Payload},
-    {timestamp, Timestamp}
+    % {timestamp, Timestamp}
   ],
-  Body = binary_to_list(Payload),
-  KafkaMsg = Msg ++ Body,
+  
   Kafka = proplists:get_value(bridges, Env),
   OnMessagePublishTopic = proplists:get_value(on_message_publish_topic, Kafka),
-  produce_kafka_message(list_to_binary(OnMessagePublishTopic), KafkaMsg, From, Env),
+  produce_kafka_message(list_to_binary(OnMessagePublishTopic), Msg, From, Env),
   {ok, Message}.
 
 on_message_dropped(#message{topic = <<"$SYS/", _/binary>>}, _By, _Reason, _Env) ->
